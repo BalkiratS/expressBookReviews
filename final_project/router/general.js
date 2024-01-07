@@ -1,5 +1,6 @@
 const express = require('express');
 let books = require("./booksdb.js");
+const { default: axios } = require('axios');
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
@@ -41,6 +42,26 @@ public_users.get('/',function (req, res) {
 
 });
 
+//get book list using axios
+app.get('/', async (req, res) => {
+    try {
+      // Make a GET request to the server to fetch the book list
+      const response = await axios.get(serverUrl);
+  
+      // Assuming the book list is in the response.data
+      const books = response.data;
+  
+      // Send the book list as a JSON response
+      res.json(books);
+    } catch (error) {
+      // Handle errors
+      console.error('Error fetching book list:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+
+
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
@@ -49,6 +70,26 @@ public_users.get('/isbn/:isbn',function (req, res) {
   return res.send(filtered_books)
 //   return res.status(300).json({message: "Yet to be implemented"});
  });
+
+ // get book detial by isbn using axios
+ app.get('/isbn/:isbn', async (req, res) => {
+    try {
+      const isbn = req.params.isbn;
+  
+      // Make a GET request to fetch book details based on ISBN
+      const response = await axios.get(`http://your-server-url/api/books/isbn/${isbn}`);
+  
+      // Assuming the book details are in the response.data
+      const bookDetails = response.data;
+  
+      // Send the book details as a JSON response
+      res.json(bookDetails);
+    } catch (error) {
+      console.error('Error fetching book details:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
@@ -60,6 +101,25 @@ public_users.get('/author/:author',function (req, res) {
 //   return res.status(300).json({message: "Yet to be implemented"});
 });
 
+// get book by author using axios
+app.get('/author/:author', async (req, res) => {
+    try {
+      const author = req.params.author;
+  
+      // Make a GET request to fetch book details based on author
+      const response = await axios.get(`http://your-server-url/api/books/author/${author}`);
+  
+      // Assuming the book details are in the response.data
+      const bookDetails = response.data;
+  
+      // Send the book details as a JSON response
+      res.json(bookDetails);
+    } catch (error) {
+      console.error('Error fetching book details:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
@@ -69,6 +129,26 @@ public_users.get('/title/:title',function (req, res) {
   return res.send(filtered_books)
 //   return res.status(300).json({message: "Yet to be implemented"});
 });
+
+// get all books bases on title using axios
+app.get('/title/:title', async (req, res) => {
+    try {
+      const title = req.params.title;
+  
+      // Make a GET request to fetch all books based on title
+      const response = await axios.get(`http://your-server-url/api/books/title/${title}`);
+  
+      // Assuming the book details are in the response.data
+      const bookDetails = response.data;
+  
+      // Send the book details as a JSON response
+      res.json(bookDetails);
+    } catch (error) {
+      console.error('Error fetching book details:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
